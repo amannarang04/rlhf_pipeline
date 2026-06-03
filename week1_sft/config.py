@@ -1,0 +1,14 @@
+MODEL_NAME = "facebook/opt-1.3b"       # base model
+DATASET_NAME = "timdettmers/openassistant-guanaco"
+OUTPUT_DIR = "./sft_output"
+MAX_SEQ_LENGTH = 512
+NUM_TRAIN_EPOCHS = 3
+PER_DEVICE_TRAIN_BATCH_SIZE = 4
+GRADIENT_ACCUMULATION_STEPS = 4
+LEARNING_RATE = 2e-4
+WARMUP_RATIO = 0.03
+LR_SCHEDULER = "cosine"
+LORA_R = 16
+LORA_ALPHA = 32
+LORA_DROPOUT = 0.05
+LORA_TARGET_MODULES = ["q_proj", "v_proj"]
