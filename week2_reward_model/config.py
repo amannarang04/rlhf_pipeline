@@ -1,0 +1,9 @@
+SFT_MODEL_PATH = "./sft_output"        # from Week 1 (or "../sft_output" depending on where it was saved)
+DATASET_NAME = "Anthropic/hh-rlhf"
+OUTPUT_DIR = "./reward_model_output"
+MAX_SEQ_LENGTH = 512
+NUM_TRAIN_EPOCHS = 1
+PER_DEVICE_TRAIN_BATCH_SIZE = 4
+GRADIENT_ACCUMULATION_STEPS = 4
+LEARNING_RATE = 1e-5
+WARMUP_RATIO = 0.03
