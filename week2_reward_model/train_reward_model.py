@@ -1,6 +1,7 @@
 import torch
 from datasets import load_dataset
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
+from peft import LoraConfig, get_peft_model, TaskType
 from trl import RewardTrainer, RewardConfig
 import config
 
@@ -17,7 +18,8 @@ def main():
         reward_model = AutoModelForSequenceClassification.from_pretrained(
             config.SFT_MODEL_PATH,
             num_labels=1,           # outputs a single scalar score
-            device_map="auto"
+            device_map="auto",
+            torch_dtype=torch.float16
         )
         tokenizer = AutoTokenizer.from_pretrained(config.SFT_MODEL_PATH)
     except Exception as e:
@@ -25,13 +27,27 @@ def main():
         reward_model = AutoModelForSequenceClassification.from_pretrained(
             "facebook/opt-1.3b",
             num_labels=1,
-            device_map="auto"
+            device_map="auto",
+            torch_dtype=torch.float16
         )
         tokenizer = AutoTokenizer.from_pretrained("facebook/opt-1.3b")
 
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
     reward_model.config.pad_token_id = tokenizer.eos_token_id
+
+    # Apply LoRA to prevent OOM and FP16 gradient unscale errors on full-parameter training
+    print("Applying LoRA...")
+    peft_config = LoraConfig(
+        task_type=TaskType.SEQ_CLS,
+        inference_mode=False,
+        r=16,
+        lora_alpha=32,
+        lora_dropout=0.05,
+        target_modules=["q_proj", "v_proj"]
+    )
+    reward_model = get_peft_model(reward_model, peft_config)
+    reward_model.print_trainable_parameters()
 
     print("Step 3 - Format data into pairs...")
     def format_pairs(sample):
