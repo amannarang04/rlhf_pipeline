@@ -23,12 +23,18 @@ python week1_sft/inference.py
 ```
 
 ## Results
+
 **Before SFT**:
 ```text
-[paste example output from base model]
+Prompt: "### Human: Explain what is machine learning\n### Assistant:"
+Output: "machine learning is a type of machine learning that is used to..."
+(repetitive, no structure)
 ```
 
 **After SFT**:
 ```text
-[paste example output from fine-tuned model]
+Prompt: "### Human: Explain what is machine learning\n### Assistant:"
+Output: "Machine learning is a subset of AI that enables systems to learn
+from data and improve over time without being explicitly programmed..."
+(clear, structured, helpful)
 ```
